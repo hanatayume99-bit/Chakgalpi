@@ -78,8 +78,10 @@ var BOOKS=[
 {id:2,t:"샘플 도서 B",a:"[저자명]",g:"과학",col:"#B9CCEC",loan:false,desc:"[도서 소개 자리]"},
 {id:3,t:"샘플 도서 C",a:"[저자명]",g:"소설",col:"#D3C1EC",loan:true,desc:"[도서 소개 자리]"},
 {id:4,t:"샘플 도서 D",a:"[저자명]",g:"에세이",col:"#F3E0A0",loan:true,desc:"[도서 소개 자리]"},
-{id:5,t:"샘플 도서 E",a:"[저자명]",g:"과학",col:"#BCE0C8",loan:true,desc:"[도서 소개 자리]"}];
-var SEED={0:[["민지","읽다 보면 마음이 좀 따뜻해져. 나라면 시간으로 뭐 하지?",12,0],["서준","설정이 신기해서 한 번에 다 읽음",8,0],["하은","결말에 반전 있음",5,1]],1:[["도윤","짧아서 부담 없어",3,0]],3:[["예진","첫 장부터 궁금해짐",4,0]]};
+{id:5,t:"샘플 도서 E",a:"[저자명]",g:"과학",col:"#BCE0C8",loan:true,desc:"[도서 소개 자리]"},
+{id:6,t:"천개의 파랑",a:"천선란",g:"소설",col:"#A9CBF0",loan:true,desc:"[도서 소개 자리]"},
+{id:7,t:"메리골드 마음 세탁소",a:"윤정은",g:"소설",col:"#F7D58A",loan:true,desc:"[도서 소개 자리]"}];
+var SEED={0:[["민지","읽다 보면 마음이 좀 따뜻해져. 나라면 시간으로 뭐 하지?",12,0],["서준","설정이 신기해서 한 번에 다 읽음",8,0],["하은","결말에 반전 있음",5,1]],1:[["도윤","짧아서 부담 없어",3,0]],3:[["예진","첫 장부터 궁금해짐",4,0]],6:[["지안","속도보다 중요한 건, 멈추지 않고 나아가는 마음이야",0,0]],7:[["서윤","괜찮아, 마음 아픈 거 정상이야 마음이 아프다는 군 진심으로 최선을 다 했다는 거야",0,0]]};
 var S0={fav:{},st:{},liked:{},rep:{},mine:{},pts:0,acts:0,bd:{}};
 var S;try{S=JSON.parse(localStorage.getItem("hjc")||"null")||S0}catch(e){S=S0}
 function hap(p){try{var H=window.Capacitor&&Capacitor.Plugins&&Capacitor.Plugins.Haptics;if(H){if(p===2)H.notification({type:'SUCCESS'});else H.impact({style:'LIGHT'})}else if(navigator.vibrate)navigator.vibrate(p===2?[12,40,18]:10)}catch(e){}}
@@ -124,7 +126,7 @@ function chal(){return '<h1>같이 읽기</h1>'
 +'<h2>이달의 도전</h2><div style="border:2px solid var(--ink);padding:14px;background:var(--paper)"><b>안 읽던 장르 한 권 찜하기</b><div class="bar"><i style="width:'+Math.min(100,Object.keys(S.fav).length*34)+'%"></i></div></div>'
 +'<h2>우리 반 미션</h2><div style="border:2px solid var(--ink);padding:14px;background:var(--paper)"><div style="display:flex;justify-content:space-between"><b>[학급명]</b><span class="mut">샘플</span></div><div class="bar"><i style="width:45%"></i></div></div>'
 +'<h2>명예의 전당</h2>'+["이달의 독서 도전자","잘 쓴 한 줄","장르 개척자"].map(function(t){return '<div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line)"><b>'+t+'</b><span class="mut">[학생 이름 자리]</span></div>'}).join("")}
-function render(){var a=document.getElementById("app");a.innerHTML=V=="home"?home():V=="book"?book():V=="mine"?mine():chal();nav();a.scrollTop=0}
+function render(){try{var h=V=="book"?"#book="+SEL:"";if(location.hash!=h)history.replaceState(null,"",location.pathname+location.search+h)}catch(e){}var a=document.getElementById("app");a.innerHTML=V=="home"?home():V=="book"?book():V=="mine"?mine():chal();nav();a.scrollTop=0}
 document.addEventListener("click",function(e){var el=e.target.closest("[data-a]");if(!el)return;var a=el.dataset.a,b=BOOKS[SEL];hap(1);
 if(a=="go"){V=el.dataset.v;TYPED=false;render()}
 else if(a=="open"){SEL=+el.dataset.id;V="book";render()}
@@ -139,6 +141,7 @@ else if(a=="spoil"){SP[el.dataset.k]=1;render()}
 else if(a=="rep"){S.rep[el.dataset.k]=1;save();toast("신고 접수됐어");render()}
 else if(a=="post"){var t=document.getElementById("rv").value.trim();if(!t){toast("한 줄만 먼저 적어줘");return}var sp=document.getElementById("sp").checked?1:0;(S.mine[b.id]=S.mine[b.id]||[]).push({t:t,sp:sp});award(10,"한 줄 붙였어");badge("rev","한 줄 남김");render()}
 else if(a=="reset"){S=JSON.parse(JSON.stringify(S0));save();render()}});
+var m=/^#book=(\d+)$/.exec(location.hash);if(m&&BOOKS[+m[1]]){SEL=+m[1];V="book"}
 render();
 </script>
 
